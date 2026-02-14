@@ -23,6 +23,12 @@ describe('Feature : Change seats', () => {
       webinarRepository = new InMemoryWebinarRepository([webinar]);
       useCase = new ChangeSeats(webinarRepository);
   });
+
+  function expectWebinarToRemainUnchanged() {
+    const webinar = webinarRepository.findByIdSync('webinar-id');
+    expect(webinar?.props.seats).toEqual(100);
+  }
+
   // Initialisation de nos tests, boilerplates...
   describe('Scenario: happy path', () => {
     const payload = {
@@ -66,8 +72,7 @@ describe('Feature : Change seats', () => {
       expect(promise).rejects.toThrow("User is not allowed to update this webinar");
     });
     it('should remain unchanged', async () => {
-      const webinar = webinarRepository.findByIdSync('webinar-id');
-      expect(webinar?.props.seats).toEqual(100);
+      expectWebinarToRemainUnchanged()
     })
   });
 
@@ -84,8 +89,7 @@ describe('Feature : Change seats', () => {
       expect(promise).rejects.toThrow("You cannot reduce the number of seats");
     });
     it('should remain unchanged', async () => {
-      const webinar = webinarRepository.findByIdSync('webinar-id');
-      expect(webinar?.props.seats).toEqual(100);
+      expectWebinarToRemainUnchanged()
     });
   });
 
@@ -102,8 +106,7 @@ describe('Feature : Change seats', () => {
       expect(promise).rejects.toThrow("Webinar must have at most 1000 seats");
     });
     it('should remain unchanged', async () => {
-      const webinar = webinarRepository.findByIdSync('webinar-id');
-      expect(webinar?.props.seats).toEqual(100);
+      expectWebinarToRemainUnchanged()
     });
   });
 });
